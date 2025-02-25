@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
-import 'package:school_audit_navigator/details_page.dart';
-import 'package:school_audit_navigator/widgets/widgets.dart';
 import 'package:school_audit_navigator/api.dart';
 import 'package:intl/intl.dart';
 import 'package:school_audit_navigator/objects/line_graph_data.dart';

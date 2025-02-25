@@ -2,12 +2,13 @@ import 'dart:ffi';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:school_audit_navigator/objects/line_graph_data.dart';
 
 class LineGraphWidget extends StatelessWidget {
   final List<LineGraphData> data;
-  
-  const LineGraphWidget(this.data, {Key?key}) : super(key: key);
+  final formatter = NumberFormat('#,##0.00');
+  LineGraphWidget(this.data, {super.key});
   double getMax(List<LineGraphData> data){
     int i =0;
     double max = 0;
@@ -37,7 +38,7 @@ class LineGraphWidget extends StatelessWidget {
         LineChartBarData(
           spots: data.map((point) => FlSpot(point.x, point.y)).toList(),
           isCurved: false,
-          dotData: FlDotData(show: true),
+          dotData: const FlDotData(show: true),
         ),
       ],
       lineTouchData: LineTouchData(
@@ -50,7 +51,7 @@ class LineGraphWidget extends StatelessWidget {
         fontWeight: FontWeight.bold,
         fontSize: 14,
       );
-      String toolTip = "\$${touchedSpot.y.round()}";
+      String toolTip = "\$${formatter.format(touchedSpot.y.round())}";
       return LineTooltipItem(toolTip, textStyle);
       }).toList() 
         )

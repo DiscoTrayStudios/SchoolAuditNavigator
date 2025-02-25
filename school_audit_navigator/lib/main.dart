@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
             tooltip: 'View your favorite audits', onPressed: () { Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Favorites()));},
+                              builder: (context) => const Favorites()));},
       )]
       ),
       body: Center(

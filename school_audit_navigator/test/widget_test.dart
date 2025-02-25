@@ -30,7 +30,7 @@ void main() {
     testWidgets('ResultsPage shows loading indicator initially',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: ResultsPage(collegeName: 'Test University'),
         ),
       );
@@ -41,7 +41,7 @@ void main() {
     testWidgets('ResultsPage shows no results message for empty criteria',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: ResultsPage(),
         ),
       );
@@ -51,7 +51,7 @@ void main() {
     });
     testWidgets('ResultsPage displays sort dropdown', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: ResultsPage(selectedState: States.al),
         ),
       );
@@ -73,7 +73,7 @@ void main() {
 
     testWidgets('AuditPage shows loading state', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: AuditPage(
             auditEIN: '123456789',
             auditID: 'TEST001',
@@ -89,7 +89,7 @@ void main() {
 
     testWidgets('AuditPage displays year dropdown', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: AuditPage(
             auditEIN: '123456789',
             auditID: 'TEST001',
@@ -119,7 +119,7 @@ void main() {
     testWidgets('AuditPage displays main section headings',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: AuditPage(
             auditEIN: '123456789',
             auditID: 'TEST001',
