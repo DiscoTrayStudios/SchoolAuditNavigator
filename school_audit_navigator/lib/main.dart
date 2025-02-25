@@ -58,14 +58,14 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 76, 124, 175),
         title: Text(widget.title),
-        actions: [
+        /*actions: [
           IconButton(
             icon: const Icon(Icons.favorite),
             tooltip: 'View your favorite audits', onPressed: () { Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => const Favorites()));},
-      )]
+      )]*/
       ),
       body: Center(
         child: SingleChildScrollView(

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:school_audit_navigator/main.dart';
 import 'package:school_audit_navigator/audit_page.dart';
@@ -50,4 +50,4 @@ class _FavoritesState extends State<Favorites> {
        )
       );
 }
-}
+}*/
