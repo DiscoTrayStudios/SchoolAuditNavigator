@@ -79,11 +79,10 @@ Future<Map<String, double>> getOtherYears(String ein) async {
   return dataMap;
 }
 //Tried to use this to get other years of audit in the dropdown, but not working
-/*Future<List<int>> getYearList(String ein) async {
-  var url = Uri.parse("https://api-staging.fac.gov/general?auditee_ein=eq.$ein&select=audit_year&order=audit_year.asc");
+Future<List<dynamic>> getYearList(String ein) async {
+  var url = Uri.parse("https://api.fac.gov/general?auditee_ein=eq.$ein&select=audit_year&order=audit_year.asc");
   var response = await http.get(url, headers: {'X-Api-Key': 'OTOlQu3kFOeDM2LwYz7S0ofa3m45FJQOhfB40VEz'});
-  List<Map<String, int>> data = (json.decode(response.body) as List).cast<Map<String, int>>();
-  List<int> work = data.map((map) => map['audit_year']).toList() as List<int>;
-  print("done");
+  List<Map<String, dynamic>> data = (json.decode(response.body) as List).cast<Map<String, dynamic>>();
+  List<dynamic> work = data.map((map) => map['audit_year']).toList() as List<dynamic>;
   return work;
-}*/
+}

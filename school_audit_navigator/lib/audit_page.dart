@@ -26,6 +26,7 @@ class _AuditPageState extends State<AuditPage> {
   String ein = widget.auditEIN.toString();
   String id = widget.auditID.toString();
   String year = widget.auditYear.toString();
+  Future<List<dynamic>> years = getYearList(widget.auditEIN.toString());
     //print(widget.auditID.toString());
     return Scaffold(
       appBar: AppBar(title: const Text(
@@ -42,21 +43,6 @@ class _AuditPageState extends State<AuditPage> {
       ),
     body: Column(
       children: [
-        DropdownButton(
-                  value: dropdownValue,
-                  items: <String>['2016','2017','2018', '2019', '2020', '2021', '2022', '2023','2024']
-                      .map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownValue = newValue!;
-                    });
-                  },
-                  ),
                   Expanded(child: 
         FutureBuilder(
         future: 
@@ -64,7 +50,7 @@ class _AuditPageState extends State<AuditPage> {
         getCollegeInfofromYear(dropdownValue, ein),
         getCollegeDataMap(dropdownValue,ein),
         graphData(ein),
-        //getYearList(widget.auditEIN.toString())
+        getYearList(widget.auditEIN.toString())
       ]), 
       builder:
       (context, AsyncSnapshot<List<dynamic>> snapshot) {
@@ -100,11 +86,28 @@ class _AuditPageState extends State<AuditPage> {
         final String auditor = collegeData['auditor_contact_name'];
         final String auditorContact = collegeData['auditor_email'];
         final String auditeeEIN = collegeData['auditee_ein'];
+        final List years = snapshot.data![3];
+        List<String> yearsStr = years.cast<String>();
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                DropdownButton(
+                  value: dropdownValue,
+                  items: yearsStr
+                      .map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      dropdownValue = newValue!;
+                    });
+                  },
+                  ),
                 Card(
                   elevation: 4,
                   shape: RoundedRectangleBorder(
