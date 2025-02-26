@@ -7,7 +7,7 @@ Future<List<Map<String, dynamic>>> searchColleges({bool isHigherED = false, Stri
 
   if (name != null && name.isNotEmpty) {
     // Search by college name
-    url = Uri.parse("https://api.fac.gov/general?select=auditee_name,audit_year,report_id,auditee_ein&auditee_name=ilike.%$name%");
+    url = Uri.parse("https://api.fac.gov/general?select=auditee_name,audit_year,report_id,auditee_ein&auditee_name=ilike.%$name%&and=(or(auditee_name.ilike.%school%,entity_type.eq.higher-ed))");
   } else if (state != null) {
     // Search by state
     if (isHigherED) {
