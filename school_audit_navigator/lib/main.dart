@@ -2,11 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:school_audit_navigator/favorites.dart';
 import 'package:school_audit_navigator/results_page.dart';
 import 'package:school_audit_navigator/objects/states.dart';
 import 'package:school_audit_navigator/widgets/widgets.dart';
-import 'package:flutter/services.dart' show rootBundle;
 
 void main() {
   runApp(
@@ -82,9 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 fit: BoxFit.scaleDown,
               ),
               const SizedBox(height: 40.0),
-                 const Paragraph(
-            'We use the Federal Audit Clearinghouse website to display data in a way that is easier to read and understand. Search nationally for a college/university by name, or use the drop down box to filter by state.'
-            ),
+              const Paragraph(
+                  'We use the Federal Audit Clearinghouse website to display data in a way that is easier to read and understand. Search nationally for a college/university by name, or use the drop down box to filter by state.'),
               const SizedBox(height: 50.0),
               // Search by Name Section
               Column(
@@ -113,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 40.0),
               const Text('-OR-'),
               const SizedBox(height: 40.0),
@@ -158,19 +155,21 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
 // loads file used by app to save favorites
 Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
+  final directory = await getApplicationDocumentsDirectory();
 
-    return directory.path;
+  return directory.path;
 }
+
 Future<File> get _localFile async {
   final path = await _localPath;
   return File('$path/saved.txt');
 }
-Future<List<String>> getList() async {
-    final file = await _localFile;
-    final contents = await file.readAsString();
-    return contents.split('\n');
 
+Future<List<String>> getList() async {
+  final file = await _localFile;
+  final contents = await file.readAsString();
+  return contents.split('\n');
 }
