@@ -5,7 +5,7 @@ import 'package:pie_chart/pie_chart.dart';
 import 'package:school_audit_navigator/api.dart';
 import 'package:intl/intl.dart';
 import 'package:school_audit_navigator/objects/line_graph_data.dart';
-import 'package:school_audit_navigator/widgets/LineGraphWidget.dart';
+import 'package:school_audit_navigator/widgets/line_graph_widget.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AuditPage extends StatefulWidget {
