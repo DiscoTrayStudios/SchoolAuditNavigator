@@ -84,34 +84,34 @@ Widget getTitles(double value, TitleMeta meta) {
   Widget text;
   switch (value.toInt()) {
     case 2016:
-      text = const Text('2016');
+      text = const Text('\'16');
       break;
     case 2017:
-      text = const Text('2017');
+      text = const Text('\'17');
       break;
     case 2018:
-      text = const Text('2018');
+      text = const Text('\'18');
       break;
     case 2019:
-      text = const Text('2019');
+      text = const Text('\'19');
       break;
     case 2020:
-      text = const Text('2020');
+      text = const Text('\'20');
       break;
     case 2021:
-      text = const Text('2021');
+      text = const Text('\'21');
       break;
     case 2022:
-      text = const Text('2022');
+      text = const Text('\'22');
       break;
     case 2023:
-      text = const Text('2023');
+      text = const Text('\'23');
       break;
     case 2024:
-      text = const Text('2024');
+      text = const Text('\'24');
       break;
     case 2025:
-      text = const Text('2025');
+      text = const Text('\'25');
       break;
     default:
       text = const Text('default');
