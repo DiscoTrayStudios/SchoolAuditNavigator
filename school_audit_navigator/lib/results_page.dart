@@ -16,14 +16,18 @@ class ResultsPage extends StatefulWidget {
 
 class _ResultsPageState extends State<ResultsPage> {
   String _selectedFilter = 'AZ'; // Default filter option changed from 'Alphabetical' to 'AZ'
+  String _searchTerm = '';
 
   @override
   Widget build(BuildContext context) {
     Future<List<Map<String, dynamic>>> futureData;
+      Map<String, String> searchList = {};
 
     if (widget.collegeName != null && widget.collegeName!.isNotEmpty) {
       futureData = searchColleges(name: widget.collegeName);
+      _searchTerm = widget.collegeName.toString();
     } else if (widget.selectedState != null) {
+      _searchTerm = widget.selectedState!.state;
       String state = widget.selectedState.toString();
       String stateAbrev = state.substring(state.indexOf('.') + 1).toUpperCase();
       futureData = searchColleges(isHigherED: true, state: stateAbrev);
@@ -40,7 +44,7 @@ class _ResultsPageState extends State<ResultsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('School Audit Navigator'),
+        title:  Text(_searchTerm),
         backgroundColor: const Color.fromARGB(255, 76, 124, 175),
         centerTitle: true,
       ),
@@ -78,12 +82,32 @@ class _ResultsPageState extends State<ResultsPage> {
               builder: (context, AsyncSnapshot snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
-                } else {
+                }
+                else {
                   // Make a copy of the data to avoid modifying the original snapshot data
                   List<Map<String, dynamic>> colleges =
                       List<Map<String, dynamic>>.from(snapshot.data);
+                  List<Map<String, dynamic>> filteredColleges = filterAudits(colleges);
                   // Sort the colleges based on _selectedFilter
-                  colleges.sort((a, b) {
+                   if (filteredColleges.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: 16),
+                              Text(
+                                'No results found for "$_searchTerm"',
+                                style: TextStyle(
+                                  fontSize: 18, 
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                  filteredColleges.sort((a, b) {
                     if (_selectedFilter == 'AZ') {
                       return a['auditee_name'].compareTo(b['auditee_name']);
                     } else if (_selectedFilter == 'ZA') {
@@ -97,26 +121,26 @@ class _ResultsPageState extends State<ResultsPage> {
                     }
                   });
                   return ListView.builder(
-                    itemCount: colleges.length,
+                    itemCount: filteredColleges.length,
                     itemBuilder: (BuildContext context, int index) {
+                      searchList[filteredColleges[index]['auditee_name']] = filteredColleges[index]['audit_year'];
                       return ListTile(
-                        trailing: Text(colleges[index]['audit_year'].toString()),
-                        title: Text(colleges[index]['auditee_name']),
+                        title: Text(filteredColleges[index]['auditee_name']),
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => AuditPage(
-                                auditEIN: colleges[index]['auditee_ein'],
-                                auditID: colleges[index]['report_id'],
-                                auditYear: colleges[index]['audit_year'],
-                                auditName: colleges[index]['auditee_name'],
+                                auditEIN: filteredColleges[index]['auditee_ein'],
+                                auditID: filteredColleges[index]['report_id'],
+                                auditYear: filteredColleges[index]['audit_year'],
+                                auditName: filteredColleges[index]['auditee_name'],
                               ),
                             ),
                           );
                         },
                       );
-                    },
+                      }
                   );
                 }
               },
@@ -126,4 +150,21 @@ class _ResultsPageState extends State<ResultsPage> {
       ),
     );
   }
+ List<Map<String, dynamic>> filterAudits(List<Map<String, dynamic>> allAudits) {
+  Map<String, List<Map<String, dynamic>>> groupedByEin = {};
+  for (var audit in allAudits) {
+    String ein = audit['auditee_ein'].toString();
+    if (!groupedByEin.containsKey(ein)) {
+      groupedByEin[ein] = [];
+    }
+    groupedByEin[ein]!.add(audit);
+  }
+  List<Map<String, dynamic>> filtered = [];
+  groupedByEin.forEach((ein, audits) {
+    audits.sort((a, b) => (b['audit_year'] ).compareTo(a['audit_year']));
+    filtered.add(audits.first);
+  });
+  
+  return filtered;
+}
 }

@@ -9,6 +9,10 @@ Future<List<Map<String, dynamic>>> searchColleges({bool isHigherED = false, Stri
     // Search by college name
     url = Uri.parse("https://api.fac.gov/general?select=auditee_name,audit_year,report_id,auditee_ein&auditee_name=ilike.%$name%&and=(or(auditee_name.ilike.%school%,entity_type.eq.higher-ed))");
   } else if (state != null) {
+    if (state.contains("IND")){
+      state = "IN";
+    }
+    print(state);
     // Search by state
     if (isHigherED) {
       url = Uri.parse("https://api.fac.gov/general?select=auditee_name,audit_year,report_id,auditee_ein&auditee_state=eq.$state&auditee_name=ilike(any).{*College*,*University*}");
