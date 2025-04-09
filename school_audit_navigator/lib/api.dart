@@ -14,7 +14,7 @@ Future<List<Map<String, dynamic>>> searchColleges(
   if (name != null && name.isNotEmpty) {
     // Search by college name
     url = Uri.parse(
-        "https://api.fac.gov/general?select=auditee_name,audit_year,report_id,auditee_uei&auditee_name=ilike.%$name%&and=(or(auditee_name.ilike.%school%,entity_type.eq.higher-ed))");
+        "https://api.fac.gov/general?select=auditee_name,audit_year,report_id,auditee_ein&auditee_name=ilike.%$name%&and=(or(auditee_name.ilike.%school%,entity_type.eq.higher-ed))");
   } else if (state != null) {
     if (state.contains("IND")) {
       state = "IN";
@@ -23,7 +23,7 @@ Future<List<Map<String, dynamic>>> searchColleges(
     // Search by state
     if (isHigherED) {
       url = Uri.parse(
-          "https://api.fac.gov/general?select=auditee_name,audit_year,report_id,auditee_uei&auditee_state=eq.$state&auditee_name=ilike(any).{*College*,*University*}");
+          "https://api.fac.gov/general?select=auditee_name,audit_year,report_id,auditee_ein&auditee_state=eq.$state&auditee_name=ilike(any).{*College*,*University*}");
     } else {
       url = Uri.parse(
           "https://api.fac.gov/general?auditee_state=eq.$state&auditee_name=fts.school");
@@ -47,9 +47,9 @@ Future<List<Map<String, dynamic>>> getCollegeinfo(String id) async {
 }
 
 Future<List<Map<String, dynamic>>> getCollegeinfofromYear(
-    String year, String uei) async {
+    String year, String ein) async {
   var url = Uri.parse(
-      "https://api.fac.gov/general?audit_year=eq.$year&auditee_uei=eq.$uei");
+      "https://api.fac.gov/general?audit_year=eq.$year&auditee_ein=eq.$ein");
   var response = await http.get(url, headers: {'X-Api-Key': myAPI});
   final data =
       (json.decode(response.body) as List).cast<Map<String, dynamic>>();
@@ -57,9 +57,9 @@ Future<List<Map<String, dynamic>>> getCollegeinfofromYear(
 }
 
 //gets college data for the pie chart
-Future<Map<String, double>> getCollegeDataMap(String year, String uei) async {
+Future<Map<String, double>> getCollegeDataMap(String year, String ein) async {
   var url1 = Uri.parse(
-      "https://api.fac.gov/general?audit_year=eq.$year&auditee_uei=eq.$uei");
+      "https://api.fac.gov/general?audit_year=eq.$year&auditee_ein=eq.$ein");
   var response1 = await http.get(url1, headers: {'X-Api-Key': myAPI});
   final data1 =
       (json.decode(response1.body) as List).cast<Map<String, dynamic>>();
@@ -76,7 +76,7 @@ Future<Map<String, double>> getCollegeDataMap(String year, String uei) async {
     String agencyPrefix = data[i]['federal_agency_prefix'];
     int newPrefix = int.parse(agencyPrefix);
     print(newPrefix);
-    String agencyName = agencies[newPrefix] ?? "Other Agency";
+    String agencyName = agencies[newPrefix] ?? "Other";
     if (!dataMap.containsKey(agencyName)) {
       dataMap[agencyName] = data[i]['amount_expended'].toDouble().abs().toDouble();
     } else {
@@ -95,9 +95,9 @@ Future<Map<String, double>> getCollegeDataMap(String year, String uei) async {
 }
 
 //gets other years for the line graph
-Future<Map<String, double>> getOtherYears(String uei) async {
+Future<Map<String, double>> getOtherYears(String ein) async {
   var url = Uri.parse(
-      "https://api.fac.gov/general?auditee_uei=eq.$uei&select=audit_year,total_amount_expended&order=audit_year.asc");
+      "https://api.fac.gov/general?auditee_ein=eq.$ein&select=audit_year,total_amount_expended&order=audit_year.asc");
   var response = await http.get(url, headers: {'X-Api-Key': myAPI});
   final data =
       (json.decode(response.body) as List).cast<Map<String, dynamic>>();
@@ -114,9 +114,9 @@ Future<Map<String, double>> getOtherYears(String uei) async {
 }
 
 //Tried to use this to get other years of audit in the dropdown, but not working
-Future<List<dynamic>> getYearList(String uei) async {
+Future<List<dynamic>> getYearList(String ein) async {
   var url = Uri.parse(
-      "https://api.fac.gov/general?auditee_uei=eq.$uei&select=audit_year&order=audit_year.asc");
+      "https://api.fac.gov/general?auditee_ein=eq.$ein&select=audit_year&order=audit_year.asc");
   var response = await http.get(url, headers: {'X-Api-Key': myAPI});
   List<Map<String, dynamic>> data =
       (json.decode(response.body) as List).cast<Map<String, dynamic>>();
