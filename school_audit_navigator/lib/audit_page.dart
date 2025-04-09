@@ -9,12 +9,12 @@ import 'package:school_audit_navigator/widgets/line_graph_widget.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AuditPage extends StatefulWidget {
-  final String? auditEIN;
+  final String? audituei;
   final String? auditID;
   final String? auditYear;
   final String? auditName;
   const AuditPage(
-      {this.auditEIN, this.auditID, this.auditYear, this.auditName, super.key});
+      {this.audituei, this.auditID, this.auditYear, this.auditName, super.key});
 
   @override
   State<AuditPage> createState() => _AuditPageState();
@@ -25,7 +25,7 @@ class _AuditPageState extends State<AuditPage> {
   late String dropdownValue = widget.auditYear.toString();
   @override
   Widget build(BuildContext context) {
-    String ein = widget.auditEIN.toString();
+    String uei = widget.audituei.toString();
     //print(widget.auditID.toString());
     return Scaffold(
         appBar: AppBar(
@@ -37,7 +37,7 @@ class _AuditPageState extends State<AuditPage> {
           elevation: 2,
           centerTitle: true,
           /*actions: [IconButton(
-          onPressed: () => writeAudit(widget.auditName.toString(),dropdownValue, widget.auditEIN.toString(), widget.auditID.toString()),
+          onPressed: () => writeAudit(widget.auditName.toString(),dropdownValue, widget.audituei.toString(), widget.auditID.toString()),
           icon: const Icon(Icons.favorite),
         ),],*/
         ),
@@ -45,10 +45,10 @@ class _AuditPageState extends State<AuditPage> {
           Expanded(
               child: FutureBuilder(
                   future: Future.wait([
-                    getCollegeInfofromYear(dropdownValue, ein),
-                    getCollegeDataMap(dropdownValue, ein),
-                    graphData(ein),
-                    getYearList(widget.auditEIN.toString())
+                    getCollegueifofromYear(dropdownValue, uei),
+                    getCollegeDataMap(dropdownValue, uei),
+                    graphData(uei),
+                    getYearList(widget.audituei.toString())
                   ]),
                   builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
                     if (!snapshot.hasData) {
@@ -242,7 +242,7 @@ class _AuditPageState extends State<AuditPage> {
                           //       await Navigator.push(
                           //         context,
                           //         MaterialPageRoute(
-                          //           builder: (context) => Detailspage(auditEIN: auditeeEIN),
+                          //           builder: (context) => Detailspage(audituei: auditeeuei),
                           //         ),
                           //       );
                           //     },
@@ -353,7 +353,7 @@ Future<File> get _localFile async {
   return File('$path/saved.txt');
 }
 
-Future<void> writeAudit(String name, String year, String EIN, String ID) async {
+Future<void> writeAudit(String name, String year, String uei, String ID) async {
   final path = await _localPath;
   //creates file if it does not exists
   if (!await File('$path/saved.txt').exists()) {
@@ -364,22 +364,22 @@ Future<void> writeAudit(String name, String year, String EIN, String ID) async {
   List<String> lines = await file.readAsLines();
   int index = 0;
   bool hasLine = false;
-  int removeIndex = -1;
+  int removueidex = -1;
   for (String line in lines) {
     if (line.contains('$name-$year')) {
-      removeIndex = index;
+      removueidex = index;
       hasLine = true;
       break;
     }
     index++;
   }
   // removes item from favorites list if item already is on it
-  if (removeIndex != -1) {
+  if (removueidex != -1) {
     lines.removeAt(index);
     await file.writeAsString(lines.join('\n'));
   }
   //Writes favorited item to list in a string split up by special charachters
   if (!hasLine) {
-    file.writeAsStringSync('$name-$year!$EIN#$ID]\n', mode: FileMode.append);
+    file.writeAsStringSync('$name-$year!$uei#$ID]\n', mode: FileMode.append);
   }
 }

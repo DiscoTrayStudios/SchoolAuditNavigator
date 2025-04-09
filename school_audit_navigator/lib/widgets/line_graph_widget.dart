@@ -63,6 +63,7 @@ class LineGraphWidget extends StatelessWidget {
           showTitles: true,
           reservedSize: 40,
           getTitlesWidget: getTitles,
+          interval: 1.0
         )),
         topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
         leftTitles: AxisTitles(
