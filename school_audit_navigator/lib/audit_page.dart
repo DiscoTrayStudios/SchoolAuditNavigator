@@ -45,7 +45,7 @@ class _AuditPageState extends State<AuditPage> {
           Expanded(
               child: FutureBuilder(
                   future: Future.wait([
-                    getCollegueifofromYear(dropdownValue, uei),
+                    getCollegeinfofromYear(dropdownValue, uei),
                     getCollegeDataMap(dropdownValue, uei),
                     graphData(uei),
                     getYearList(widget.audituei.toString())

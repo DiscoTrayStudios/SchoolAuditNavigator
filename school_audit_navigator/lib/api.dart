@@ -38,7 +38,7 @@ Future<List<Map<String, dynamic>>> searchColleges(
   return data;
 }
 
-Future<List<Map<String, dynamic>>> getCollegueifo(String id) async {
+Future<List<Map<String, dynamic>>> getCollegeinfo(String id) async {
   var url = Uri.parse("https://api.fac.gov/general?report_id=eq.$id");
   var response = await http.get(url, headers: {'X-Api-Key': myAPI});
   final data =
@@ -46,7 +46,7 @@ Future<List<Map<String, dynamic>>> getCollegueifo(String id) async {
   return data;
 }
 
-Future<List<Map<String, dynamic>>> getCollegueifofromYear(
+Future<List<Map<String, dynamic>>> getCollegeinfofromYear(
     String year, String uei) async {
   var url = Uri.parse(
       "https://api.fac.gov/general?audit_year=eq.$year&auditee_uei=eq.$uei");
