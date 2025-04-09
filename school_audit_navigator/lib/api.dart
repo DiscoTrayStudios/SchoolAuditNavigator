@@ -38,7 +38,7 @@ Future<List<Map<String, dynamic>>> searchColleges(
   return data;
 }
 
-Future<List<Map<String, dynamic>>> getCollegeInfo(String id) async {
+Future<List<Map<String, dynamic>>> getCollegeinfo(String id) async {
   var url = Uri.parse("https://api.fac.gov/general?report_id=eq.$id");
   var response = await http.get(url, headers: {'X-Api-Key': myAPI});
   final data =
@@ -46,7 +46,7 @@ Future<List<Map<String, dynamic>>> getCollegeInfo(String id) async {
   return data;
 }
 
-Future<List<Map<String, dynamic>>> getCollegeInfofromYear(
+Future<List<Map<String, dynamic>>> getCollegeinfofromYear(
     String year, String ein) async {
   var url = Uri.parse(
       "https://api.fac.gov/general?audit_year=eq.$year&auditee_ein=eq.$ein");
@@ -76,16 +76,21 @@ Future<Map<String, double>> getCollegeDataMap(String year, String ein) async {
     String agencyPrefix = data[i]['federal_agency_prefix'];
     int newPrefix = int.parse(agencyPrefix);
     print(newPrefix);
-    String agencyName = agencies[newPrefix] ?? "";
+    String agencyName = agencies[newPrefix] ?? "Other";
     if (!dataMap.containsKey(agencyName)) {
-      dataMap[agencyName] = data[i]['amount_expended'].toDouble();
+      dataMap[agencyName] = data[i]['amount_expended'].toDouble().abs().toDouble();
     } else {
-      dataMap[agencyName] = dataMap[agencyName]! + data[i]['amount_expended'];
+      dataMap[agencyName] = dataMap[agencyName]! + data[i]['amount_expended'].abs().toDouble();
     }
     i++;
   }
   print(url);
-  print(dataMap);
+  int j = 0;
+  while(j < dataMap.length){
+    print(dataMap.keys.elementAt(j));
+    print(dataMap.values.elementAt(j));
+    j++;
+  }
   return dataMap;
 }
 
@@ -99,8 +104,10 @@ Future<Map<String, double>> getOtherYears(String ein) async {
   final Map<String, double> dataMap = {};
   int i = 0;
   while (i < data.length) {
+    if(dataMap[data[i]['audit_year'].toString()] == null){
     dataMap[data[i]['audit_year'].toString()] =
         data[i]['total_amount_expended'].toDouble();
+  }
     i++;
   }
   return dataMap;
@@ -115,5 +122,7 @@ Future<List<dynamic>> getYearList(String ein) async {
       (json.decode(response.body) as List).cast<Map<String, dynamic>>();
   List<dynamic> work =
       data.map((map) => map['audit_year']).toList() as List<dynamic>;
-  return work;
+  List<dynamic> workFinal=
+  work.toSet().toList();
+  return workFinal;
 }

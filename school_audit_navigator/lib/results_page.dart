@@ -131,7 +131,7 @@ class _ResultsPageState extends State<ResultsPage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => AuditPage(
-                                auditEIN: filteredColleges[index]['auditee_ein'],
+                                auditein: filteredColleges[index]['auditee_ein'],
                                 auditID: filteredColleges[index]['report_id'],
                                 auditYear: filteredColleges[index]['audit_year'],
                                 auditName: filteredColleges[index]['auditee_name'],
@@ -151,16 +151,16 @@ class _ResultsPageState extends State<ResultsPage> {
     );
   }
  List<Map<String, dynamic>> filterAudits(List<Map<String, dynamic>> allAudits) {
-  Map<String, List<Map<String, dynamic>>> groupedByEin = {};
+  Map<String, List<Map<String, dynamic>>> groupedByein = {};
   for (var audit in allAudits) {
     String ein = audit['auditee_ein'].toString();
-    if (!groupedByEin.containsKey(ein)) {
-      groupedByEin[ein] = [];
+    if (!groupedByein.containsKey(ein)) {
+      groupedByein[ein] = [];
     }
-    groupedByEin[ein]!.add(audit);
+    groupedByein[ein]!.add(audit);
   }
   List<Map<String, dynamic>> filtered = [];
-  groupedByEin.forEach((ein, audits) {
+  groupedByein.forEach((ein, audits) {
     audits.sort((a, b) => (b['audit_year'] ).compareTo(a['audit_year']));
     filtered.add(audits.first);
   });
