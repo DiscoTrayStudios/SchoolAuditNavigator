@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 40.0),
               const Paragraph(
-                  'We use the Federal Audit Clearinghouse website to display data in a way that is easier to read and understand. Search nationally for a college/university by name, or use the drop down box to filter by state.'),
+                  'We use the Federal Audit Clearinghouse website to display data in a way that is easier to read and understand. Search nationally for a college/university by name, or use the drop down box to filter by state. Users could be limited by rate limits.'),
               const SizedBox(height: 50.0),
               // Search by Name Section
               Column(
