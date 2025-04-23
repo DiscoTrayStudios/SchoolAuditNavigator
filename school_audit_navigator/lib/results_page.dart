@@ -59,7 +59,7 @@ class _ResultsPageState extends State<ResultsPage> {
                 const Text('         Sort by: '),
                 DropdownButton<String>(
                   value: _selectedFilter,
-                  items: <String>['AZ', 'ZA', 'Oldest Year', 'Newest Year']
+                  items: <String>['AZ', 'ZA',]
                       .map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -80,9 +80,26 @@ class _ResultsPageState extends State<ResultsPage> {
             child: FutureBuilder(
               future: futureData,
               builder: (context, AsyncSnapshot snapshot) {
-                if (!snapshot.hasData) {
+               if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
                 }
+               else if (snapshot.hasError) {
+                  return const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 16),
+                        Text(
+                          'You have made too many requests. Try again later.',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                      ],
+                    ),
+                  );}
                 else {
                   // Make a copy of the data to avoid modifying the original snapshot data
                   List<Map<String, dynamic>> colleges =
@@ -112,10 +129,6 @@ class _ResultsPageState extends State<ResultsPage> {
                       return a['auditee_name'].compareTo(b['auditee_name']);
                     } else if (_selectedFilter == 'ZA') {
                       return b['auditee_name'].compareTo(a['auditee_name']);
-                    } else if (_selectedFilter == 'Oldest Year') {
-                      return a['audit_year'].compareTo(b['audit_year']);
-                    } else if (_selectedFilter == 'Newest Year') {
-                      return b['audit_year'].compareTo(a['audit_year']);
                     } else {
                       return 0;
                     }

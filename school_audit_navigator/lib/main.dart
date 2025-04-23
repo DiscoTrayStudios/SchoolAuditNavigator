@@ -155,21 +155,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-// loads file used by app to save favorites
-Future<String> get _localPath async {
-  final directory = await getApplicationDocumentsDirectory();
-
-  return directory.path;
-}
-
-Future<File> get _localFile async {
-  final path = await _localPath;
-  return File('$path/saved.txt');
-}
-
-Future<List<String>> getList() async {
-  final file = await _localFile;
-  final contents = await file.readAsString();
-  return contents.split('\n');
-}

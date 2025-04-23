@@ -7,7 +7,7 @@ class LineGraphData{
   LineGraphData({required this.x, required this.y});
 }
 
-Future<List<LineGraphData>>  graphData(String ein) async {
+Future<List>  graphData(String ein) async {
   Map<String, double> dataList = await getOtherYears(ein);
   final data = <LineGraphData>[];
   dataList.forEach((key, value) {
