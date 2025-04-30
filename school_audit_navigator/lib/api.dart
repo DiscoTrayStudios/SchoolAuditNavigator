@@ -1,5 +1,7 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'package:school_audit_navigator/objects/agencies.dart';
+import 'package:school_audit_navigator/audit_page.dart';
 import 'package:http/http.dart' as http;
 
 // The API key is in this file. It should not be part of the repo. If it is
@@ -19,7 +21,6 @@ Future<List<Map<String, dynamic>>> searchColleges(
     if (state.contains("IND")) {
       state = "IN";
     }
-    print(state);
     // Search by state
     if (isHigherED) {
       url = Uri.parse(
@@ -33,65 +34,52 @@ Future<List<Map<String, dynamic>>> searchColleges(
   }
 
   var response = await http.get(url, headers: {'X-Api-Key': myAPI});
+  if (response.body.contains("OVER_RATE_LIMIT")) {
+    throw Exception('Slow Down!');
+  }
   final data =
       (json.decode(response.body) as List).cast<Map<String, dynamic>>();
   return data;
 }
-
-Future<List<Map<String, dynamic>>> getCollegeinfo(String id) async {
-  var url = Uri.parse("https://api.fac.gov/general?report_id=eq.$id");
-  var response = await http.get(url, headers: {'X-Api-Key': myAPI});
-  final data =
-      (json.decode(response.body) as List).cast<Map<String, dynamic>>();
-  return data;
-}
-
-Future<List<Map<String, dynamic>>> getCollegeinfofromYear(
-    String year, String ein) async {
+Future<List<dynamic>> getCollegeinfofromYear(String year, String ein) async {
   var url = Uri.parse(
       "https://api.fac.gov/general?audit_year=eq.$year&auditee_ein=eq.$ein");
   var response = await http.get(url, headers: {'X-Api-Key': myAPI});
+  if (response.body.contains("OVER_RATE_LIMIT")) {
+    throw Exception('Slow Down!');
+  }
   final data =
       (json.decode(response.body) as List).cast<Map<String, dynamic>>();
-  return data;
+  Map<String, double> dataMap= await getCollegeDataMap(data);
+  return [data,dataMap];
 }
 
 //gets college data for the pie chart
-Future<Map<String, double>> getCollegeDataMap(String year, String ein) async {
-  var url1 = Uri.parse(
-      "https://api.fac.gov/general?audit_year=eq.$year&auditee_ein=eq.$ein");
-  var response1 = await http.get(url1, headers: {'X-Api-Key': myAPI});
-  final data1 =
-      (json.decode(response1.body) as List).cast<Map<String, dynamic>>();
-  String reportID = data1[0]['report_id'];
+Future<Map<String, double>> getCollegeDataMap(List<Map<String, dynamic>> data) async {
+  String reportID = data[0]['report_id'];
   var url = Uri.parse(
       "https://api.fac.gov/federal_awards?report_id=eq.$reportID&select=federal_agency_prefix,amount_expended");
   var response = await http.get(url, headers: {'X-Api-Key': myAPI});
-  final data =
+  if (response.body.contains("OVER_RATE_LIMIT")) {
+    throw Exception('Slow Down!');
+  }
+  final agencyData =
       (json.decode(response.body) as List).cast<Map<String, dynamic>>();
   final Map<String, double> dataMap = {};
   int i = 0;
-  print(data.length);
-  while (i < data.length) {
-    String agencyPrefix = data[i]['federal_agency_prefix'];
+  while (i < agencyData.length) {
+    String agencyPrefix = agencyData[i]['federal_agency_prefix'];
     int newPrefix = int.parse(agencyPrefix);
-    print(newPrefix);
     String agencyName = agencies[newPrefix] ?? "Other";
     if (!dataMap.containsKey(agencyName)) {
-      dataMap[agencyName] = data[i]['amount_expended'].toDouble().abs().toDouble();
+      dataMap[agencyName] = agencyData[i]['amount_expended'].toDouble().abs().toDouble();
     } else {
-      dataMap[agencyName] = dataMap[agencyName]! + data[i]['amount_expended'].abs().toDouble();
+      dataMap[agencyName] = dataMap[agencyName]! + agencyData[i]['amount_expended'].abs().toDouble();
     }
     i++;
   }
-  print(url);
-  int j = 0;
-  while(j < dataMap.length){
-    print(dataMap.keys.elementAt(j));
-    print(dataMap.values.elementAt(j));
-    j++;
-  }
   return dataMap;
+
 }
 
 //gets other years for the line graph
@@ -110,19 +98,10 @@ Future<Map<String, double>> getOtherYears(String ein) async {
   }
     i++;
   }
-  return dataMap;
-}
-
-//Tried to use this to get other years of audit in the dropdown, but not working
-Future<List<dynamic>> getYearList(String ein) async {
-  var url = Uri.parse(
-      "https://api.fac.gov/general?auditee_ein=eq.$ein&select=audit_year&order=audit_year.asc");
-  var response = await http.get(url, headers: {'X-Api-Key': myAPI});
-  List<Map<String, dynamic>> data =
-      (json.decode(response.body) as List).cast<Map<String, dynamic>>();
   List<dynamic> work =
       data.map((map) => map['audit_year']).toList() as List<dynamic>;
   List<dynamic> workFinal=
   work.toSet().toList();
-  return workFinal;
+  setyears(workFinal);
+  return dataMap;
 }

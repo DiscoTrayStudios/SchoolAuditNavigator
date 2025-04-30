@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,8 +7,7 @@ import 'package:school_audit_navigator/api.dart';
 import 'package:intl/intl.dart';
 import 'package:school_audit_navigator/objects/line_graph_data.dart';
 import 'package:school_audit_navigator/widgets/line_graph_widget.dart';
-import 'package:path_provider/path_provider.dart';
-
+List<dynamic> _yearsStr = [];
 class AuditPage extends StatefulWidget {
   final String? auditein;
   final String? auditID;
@@ -25,8 +25,7 @@ class _AuditPageState extends State<AuditPage> {
   late String dropdownValue = widget.auditYear.toString();
   @override
   Widget build(BuildContext context) {
-    String uei = widget.auditein.toString();
-    //print(widget.auditID.toString());
+    String ein = widget.auditein.toString();
     return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -36,22 +35,16 @@ class _AuditPageState extends State<AuditPage> {
           backgroundColor: const Color.fromARGB(255, 76, 124, 175),
           elevation: 2,
           centerTitle: true,
-          /*actions: [IconButton(
-          onPressed: () => writeAudit(widget.auditName.toString(),dropdownValue, widget.audituei.toString(), widget.auditID.toString()),
-          icon: const Icon(Icons.favorite),
-        ),],*/
         ),
         body: Column(children: [
           Expanded(
               child: FutureBuilder(
                   future: Future.wait([
-                    getCollegeinfofromYear(dropdownValue, uei),
-                    getCollegeDataMap(dropdownValue, uei),
-                    graphData(uei),
-                    getYearList(widget.auditein.toString())
+                    getCollegeinfofromYear(dropdownValue, ein),
+                    graphData(ein),
                   ]),
                   builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-                    if (!snapshot.hasData) {
+                  if (!snapshot.hasData) {
                       return const Scaffold(
                         body: Center(
                           child: Column(
@@ -71,9 +64,25 @@ class _AuditPageState extends State<AuditPage> {
                         ),
                       );
                     }
+                  else if (snapshot.hasError) {
+                  return const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 16),
+                        Text(
+                          'You have made too many requests. Try again later.',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );}
                     final List<Map<String, dynamic>> college =
-                        snapshot.data![0];
-                    final Map<String, double> values = snapshot.data![1];
+                        snapshot.data![0][0];
+                    Map<String, double> values = snapshot.data![0][1];
                     if (values.isEmpty) {
                       values["No Data"] = 1;
                     }
@@ -84,8 +93,7 @@ class _AuditPageState extends State<AuditPage> {
                     final String auditeeContact = collegeData['auditee_email'];
                     final String auditor = collegeData['auditor_contact_name'];
                     final String auditorContact = collegeData['auditor_email'];
-                    final List years = snapshot.data![3];
-                    List<String> yearsStr = years.cast<String>();
+                    List<String> yearsStr = _yearsStr.cast<String>();
                     return SingleChildScrollView(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16.0, vertical: 24.0),
@@ -229,45 +237,18 @@ class _AuditPageState extends State<AuditPage> {
                                           width: 400,
                                           height: 350,
                                           child: LineGraphWidget(
-                                              snapshot.data![2]))),
+                                              snapshot.data![1]))),
                                 ],
                               ),
                             ),
                           ),
                           const SizedBox(height: 16),
-                          // Align(
-                          //   alignment: Alignment.centerRight,
-                          //   child: ElevatedButton.icon(
-                          //     onPressed: () async {
-                          //       await Navigator.push(
-                          //         context,
-                          //         MaterialPageRoute(
-                          //           builder: (context) => Detailspage(audituei: auditeeuei),
-                          //         ),
-                          //       );
-                          //     },
-                          //     icon: const Icon(Icons.info_outline),
-                          //     label: const Text('More Details'),
-                          //     style: ElevatedButton.styleFrom(
-                          //       backgroundColor: const Color.fromARGB(255, 100, 200, 100),
-                          //       foregroundColor: Colors.white,
-                          //       padding: const EdgeInsets.symmetric(
-                          //         horizontal: 24,
-                          //         vertical: 12,
-                          //       ),
-                          //       shape: RoundedRectangleBorder(
-                          //         borderRadius: BorderRadius.circular(8),
-                          //       ),
-                          // ),
-                          //   ),
-                          // ),
                         ],
                       ),
                     );
                   }))
         ]));
   }
-
   Widget _buildInfoRow(String label, String value, IconData icon) {
     return Row(
       children: [
@@ -340,46 +321,6 @@ class _AuditPageState extends State<AuditPage> {
     );
   }
 }
-
-//https://docs.flutter.dev/cookbook/persistence/reading-writing-files
-Future<String> get _localPath async {
-  final directory = await getApplicationDocumentsDirectory();
-
-  return directory.path;
-}
-
-Future<File> get _localFile async {
-  final path = await _localPath;
-  return File('$path/saved.txt');
-}
-
-Future<void> writeAudit(String name, String year, String uei, String ID) async {
-  final path = await _localPath;
-  //creates file if it does not exists
-  if (!await File('$path/saved.txt').exists()) {
-    File('$path/saved.txt').create();
-  }
-  final file = await _localFile;
-  // Write the file
-  List<String> lines = await file.readAsLines();
-  int index = 0;
-  bool hasLine = false;
-  int removueidex = -1;
-  for (String line in lines) {
-    if (line.contains('$name-$year')) {
-      removueidex = index;
-      hasLine = true;
-      break;
-    }
-    index++;
-  }
-  // removes item from favorites list if item already is on it
-  if (removueidex != -1) {
-    lines.removeAt(index);
-    await file.writeAsString(lines.join('\n'));
-  }
-  //Writes favorited item to list in a string split up by special charachters
-  if (!hasLine) {
-    file.writeAsStringSync('$name-$year!$uei#$ID]\n', mode: FileMode.append);
-  }
+void setyears(List<dynamic> years ){
+  _yearsStr = years;
 }

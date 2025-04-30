@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 40.0),
               const Paragraph(
-                  'We use the Federal Audit Clearinghouse website to display data in a way that is easier to read and understand. Search nationally for a college/university by name, or use the drop down box to filter by state.'),
+                  'We use the Federal Audit Clearinghouse website to display data in a way that is easier to read and understand. Search nationally for a college/university by name, or use the drop down box to filter by state. Users could be limited by rate limits.'),
               const SizedBox(height: 50.0),
               // Search by Name Section
               Column(
@@ -154,22 +154,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-}
-
-// loads file used by app to save favorites
-Future<String> get _localPath async {
-  final directory = await getApplicationDocumentsDirectory();
-
-  return directory.path;
-}
-
-Future<File> get _localFile async {
-  final path = await _localPath;
-  return File('$path/saved.txt');
-}
-
-Future<List<String>> getList() async {
-  final file = await _localFile;
-  final contents = await file.readAsString();
-  return contents.split('\n');
 }
