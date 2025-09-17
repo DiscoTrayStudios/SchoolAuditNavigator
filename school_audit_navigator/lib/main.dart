@@ -74,9 +74,9 @@ class _MyHomePageState extends State<MyHomePage> {
               const SizedBox(height: 60.0),
 
               const Image(
-                image: AssetImage("assets/fac-gov-logo.jpeg"),
-                height: 100.0,
-                width: 100.0,
+                image: AssetImage("assets/SAN.png"),
+                height: 150.0,
+                width: 150.0,
                 fit: BoxFit.scaleDown,
               ),
               const SizedBox(height: 40.0),

@@ -9,12 +9,12 @@ import 'package:school_audit_navigator/objects/line_graph_data.dart';
 import 'package:school_audit_navigator/widgets/line_graph_widget.dart';
 List<dynamic> _yearsStr = [];
 class AuditPage extends StatefulWidget {
-  final String? auditein;
+  final String? auditEIN;
   final String? auditID;
   final String? auditYear;
   final String? auditName;
   const AuditPage(
-      {this.auditein, this.auditID, this.auditYear, this.auditName, super.key});
+      {this.auditEIN, this.auditID, this.auditYear, this.auditName, super.key});
 
   @override
   State<AuditPage> createState() => _AuditPageState();
@@ -25,7 +25,7 @@ class _AuditPageState extends State<AuditPage> {
   late String dropdownValue = widget.auditYear.toString();
   @override
   Widget build(BuildContext context) {
-    String ein = widget.auditein.toString();
+    String ein = widget.auditEIN.toString();
     return Scaffold(
         appBar: AppBar(
           title: const Text(
